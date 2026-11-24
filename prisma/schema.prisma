@@ -30,9 +30,9 @@ model Category {
   id             Int    @id @default(autoincrement())
   name           String @unique
   brand          String
-  ProductVariant String
-  Ingredient     String @db.Text
-  SkinType       String @db.VarChar(15)
+  productVariant String
+  ingredient     String @db.Text
+  skinType       String @db.VarChar(15)
 
   products Product[]
 }
