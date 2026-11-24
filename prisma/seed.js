@@ -74,7 +74,9 @@ async function main() {
   // }
 
   // Seconda modalità per popolamento tabella category tramite Promise.all e map
+  //
 
+  //  creo le categorie in parallelo e salvo il risultato
   const categorieSalvate = await Promise.all(
     categoriesData.map((cat) => prisma.category.create({ data: cat }))
   );
