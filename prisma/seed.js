@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import prisma from "../libs/prismaClient.js";
 
 async function main() {
@@ -51,6 +52,25 @@ async function main() {
 
   console.log("Categorie create:", categorieSalvate);
 }
+
+for (let i = 0; i < 20; i++) {
+  const categoriaCasuale = faker.helpers.arrayElement(categorieSalvate);
+
+  await prisma.product.create({
+    data: {
+      name: `${
+        categoriaCasuale.productVariant
+      } ${faker.commerce.productAdjective()}`,
+      description: faker.commerce.productDescription(),
+      price: faker.commerce.price(),
+      images: faker.image.urlPicsumPhotos(),
+      isActive: true,
+      categoryId: categoriaCasuale.id,
+    },
+  });
+}
+
+console.log("Prodotti db");
 
 main()
   .catch((e) => {
