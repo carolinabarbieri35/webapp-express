@@ -32,7 +32,22 @@ async function main() {
       ingredient: "Cheratina Vegetale, Olio di Argan, Biotina",
       skintype: "Normale",
     },
+  {
+    name: "Capelli",
+    brand: "Essenza",
+    productVariant: "Maschera",
+    ingredient: "Cheratina",
+    skinType: "Normale",
+  }
   ];
+
+  const categorieSalvate = []
+  for (const cat of listaCategorie) {
+    const nuovaCategoria = await prisma.category.create ({data : cat})
+    categorieSalvate.push(nuovaCategoria)
+  }
+    
+  }
 }
 
 main()
