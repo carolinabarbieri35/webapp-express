@@ -7,6 +7,7 @@ const app = express();
 const port = process.env.APP_PORT || 3000;
 
 app.use(express.json());
+app.use("/product", router);
 
 app.get("/", (req, res) => {
   res.send("Buon lavoro!");
