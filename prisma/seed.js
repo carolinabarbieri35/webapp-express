@@ -3,6 +3,8 @@ import prisma from "../libs/prismaClient.js";
 async function main() {
   console.log("Seeder started");
 
+  await prisma.category.deleteMany();
+
   const categoriesData = [
     {
       name: "Skincare Viso",
@@ -30,24 +32,24 @@ async function main() {
       brand: "SilkHair",
       productVariant: "Maschera",
       ingredient: "Cheratina Vegetale, Olio di Argan, Biotina",
-      skintype: "Normale",
+      skinType: "Normale",
     },
-  {
-    name: "Capelli",
-    brand: "Essenza",
-    productVariant: "Maschera",
-    ingredient: "Cheratina",
-    skinType: "Normale",
-  }
+    {
+      name: "Capelli",
+      brand: "Essenza",
+      productVariant: "Maschera",
+      ingredient: "Cheratina",
+      skinType: "Normale",
+    },
   ];
 
-  const categorieSalvate = []
-  for (const cat of listaCategorie) {
-    const nuovaCategoria = await prisma.category.create ({data : cat})
-    categorieSalvate.push(nuovaCategoria)
+  const categorieSalvate = [];
+  for (const cat of categoriesData) {
+    const nuovaCategoria = await prisma.category.create({ data: cat });
+    categorieSalvate.push(nuovaCategoria);
   }
-    
-  }
+
+  console.log("Categorie create:", categorieSalvate);
 }
 
 main()
