@@ -2,17 +2,20 @@ import "dotenv/config";
 import express from "express";
 import router from "./Routes/productsRouter.js";
 import prisma from "./libs/prismaClient.js";
-
+import errorsHandler from "./middlewares/errorsHandler.js";
+import notFound from "./middlewares/notFound.js";
+// Setup
 const app = express();
 const port = process.env.APP_PORT || 3000;
 
+// Middleware di Setup
 app.use(express.json());
-app.use("/product", router);
-
+// Routes
 app.get("/", (req, res) => {
   res.send("Buon lavoro!");
 });
 
+app.use("/product", router);
 app.get("/category", async (req, res) => {
   try {
     const category = await prisma.category.findMany();
@@ -22,7 +25,11 @@ app.get("/category", async (req, res) => {
     res.status(500).json({ error: "Errore nel recupero delle categorie" });
   }
 });
+// Middleware
+app.use(errorsHandler);
+app.use(notFound);
 
+// Start server
 app.listen(port, () =>
   console.log(`Server started on http://localhost: ${port}`)
 );
