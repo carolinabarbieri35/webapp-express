@@ -5,8 +5,8 @@ const router = express.Router();
 
 // Index
 router.get("/", async (req, res) => {
-const limit = req.query.limit;
- // Select
+  const limit = req.query.limit;
+  // Select
   const products = await prisma.product.findMany({
     select: {
       id: true,
@@ -21,10 +21,24 @@ const limit = req.query.limit;
   res.json(products);
 });
 
-// Show
-router.get("/:id", (req, res) => {
+// Show dettaglio di una specifica risorsa
+router.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
-  res.send(`Dettaglio prodotto ${id}`);
+
+  // Validazione formato numerico id
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({
+      error: "Invalid product id",
+    });
+  }
+
+  const product = await prisma.product.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  res.json(product);
 });
 
 // Store

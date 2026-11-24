@@ -3,7 +3,7 @@ import prisma from "../libs/prismaClient.js";
 
 const router = express.Router();
 
-app.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const category = await prisma.category.findMany();
     res.json(category);
@@ -13,4 +13,4 @@ app.get("/", async (req, res) => {
   }
 });
 
-export default categoryRoutes;
+export default router;

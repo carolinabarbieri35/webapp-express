@@ -1,7 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import router from "./Routes/productsRouter.js";
-import prisma from "./libs/prismaClient.js";
+import productRouter from "./Routes/productsRouter.js";
 import errorsHandler from "./middlewares/errorsHandler.js";
 import notFound from "./middlewares/notFound.js";
 import categoryRoutes from "./Routes/categoryRoutes.js";
@@ -18,7 +17,7 @@ app.get("/", (req, res) => {
   res.send("Buon lavoro!");
 });
 
-app.use("/product", router);
+app.use("/product", productRouter);
 app.use("/category", categoryRoutes);
 
 // Middleware
