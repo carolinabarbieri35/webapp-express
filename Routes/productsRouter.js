@@ -38,6 +38,14 @@ router.get("/:id", async (req, res) => {
     },
   });
 
+  // Validazione esistenza prodotto
+  if (!product) {
+    res.status(404).json({
+      error: "Product not found",
+    });
+    return;
+  }
+
   res.json(product);
 });
 
