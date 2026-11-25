@@ -69,11 +69,11 @@ router.post("/", async (req, res) => {
   // Select * from category where id = categoryId
   const category = await prisma.category.findUnique({
     where: {
-      id : categoryId,
-    }
-  })
-  if(!category) {
-    return sendError(res, 400, 'Category id not valid');
+      id: categoryId,
+    },
+  });
+  if (!category) {
+    return sendError(res, 400, "Category id not valid");
   }
 
   const newProduct = await prisma.product.create({
@@ -94,28 +94,49 @@ router.patch("/:id", async (req, res) => {
   const id = Number(req.params.id);
 
   // validazione id
-  if(!Number.isInteger(id)){
-    return res.sendStatus(400).json({
-      error: 'Invalid product id'
-    })
-  };
-
-  const {name, description, price, images, isActive, categoryId } = req.body;
-
- const updatedProduct =  await prisma.product.update(){
-  where : {
-    id
-  },
-  data :{
-    name,
-    description,
-    price,
-    images,
-    isActive,
-    categoryId
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({
+      error: "Invalid product id",
+    });
   }
 
- }
+  const { name, description, price, images, isActive, categoryId } = req.body;
+
+  // Validazione esistenza prodotte da modificare
+  const product = await prisma.product.findUnique({
+    where: {
+      id,
+    },
+  });
+  if (!product) {
+    return sendError(res, 404, "Product not found");
+  }
+
+  // Validazione se la categoria esiste
+  if (categoryId !== undefined) {
+    const category = await prisma.category.findUnique({
+      where: {
+        id: categoryId,
+      },
+    });
+    if (!category) {
+      return sendError(res, 400, "Category id not valid");
+    }
+  }
+
+  const updatedProduct = await prisma.product.update({
+    where: {
+      id,
+    },
+    data: {
+      name,
+      description,
+      price,
+      images,
+      isActive,
+      categoryId,
+    },
+  });
   res.json(updatedProduct);
 });
 
