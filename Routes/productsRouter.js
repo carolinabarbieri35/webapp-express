@@ -141,9 +141,30 @@ router.patch("/:id", async (req, res) => {
 });
 
 // Destroy
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
   const id = Number(req.params.id);
-  res.send(`Eliminazione del prodotto con ${id}`);
+
+  // Validazione id
+  if (!Number.isInteger(id)) {
+    return sendError(res, 400, "Invalid product id");
+  }
+  // Validazione esistenza prodotto
+  const product = await prisma.product.findUnique({
+    where: {
+      id,
+    },
+  });
+  if (!product) {
+    return sendError(res, 404, "Product not found");
+  }
+
+  await prisma.product.delete({
+    where: {
+      id,
+    },
+  });
+
+  res.sendStatus(204);
 });
 
 export default router;
