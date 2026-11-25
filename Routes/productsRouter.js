@@ -9,6 +9,9 @@ const sendError = (res, status, message) =>
     error: message,
   });
 
+const isStringValid = (value) =>
+  typeof value === "string" && value.trim() !== "";
+
 // Index
 router.get("/", async (req, res) => {
   const limit = req.query.limit;
@@ -53,20 +56,26 @@ router.get("/:id", async (req, res) => {
   res.json(product);
 });
 
-// Store
+// Store creazione di un nuovo prodotto
 router.post("/", async (req, res) => {
-  const { name, description, price, image, isActive } = req.body;
+  const { name, description, price, images, isActive, categoryId } = req.body;
+
+  // Validazione campi obbligatori
+  if (!isStringValid(name) || !isStringValid(description)) {
+    return sendError(res, 400, "Name and description data are required");
+  }
 
   const newProduct = await prisma.product.create({
     data: {
       name,
       description,
       price,
-      image,
+      images,
       isActive,
+      categoryId,
     },
   });
-  res.send("Creazione di un nuovo prodotto");
+  res.status(201).json(newProduct);
 });
 
 // Update

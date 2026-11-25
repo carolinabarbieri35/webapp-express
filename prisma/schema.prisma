@@ -16,11 +16,11 @@ model Product {
   id          Int      @id @default(autoincrement())
   name        String
   description String   @db.Text
-  price       Decimal  @db.Decimal(10, 2)
-  images      String
+  price       Decimal? @db.Decimal(10, 2)
+  images      String?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime @default(now()) @updatedAt
 
   categoryId Int
   category   Category @relation(fields: [categoryId], references: [id])
@@ -34,7 +34,7 @@ model Category {
   ingredient     String   @db.Text
   skinType       String   @db.VarChar(15)
   createdAt      DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  updatedAt      DateTime @default(now()) @updatedAt
 
   products Product[]
 }

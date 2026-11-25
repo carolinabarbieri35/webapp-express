@@ -21,8 +21,8 @@ app.use("/product", productRouter);
 app.use("/category", categoryRoutes);
 
 // Middleware
-app.use(errorsHandler);
 app.use(notFound);
+app.use(errorsHandler);
 
 // Start server
 app.listen(port, () =>
