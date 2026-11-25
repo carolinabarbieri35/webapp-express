@@ -3,6 +3,12 @@ import prisma from "../libs/prismaClient.js";
 
 const router = express.Router();
 
+// Utilities
+const sendError = (res, status, message) =>
+  res.status(status).json({
+    error: message,
+  });
+
 // Index
 router.get("/", async (req, res) => {
   const limit = req.query.limit;
@@ -27,31 +33,39 @@ router.get("/:id", async (req, res) => {
 
   // Validazione formato numerico id
   if (!Number.isInteger(id)) {
-    return res.status(400).json({
-      error: "Invalid product id",
-    });
+    return sendError(res, 400, "Invalid product id");
   }
-
   const product = await prisma.product.findUnique({
     where: {
       id,
+    },
+    // join e possiamo aggiungere omit se vogliamo escludere delle colonne
+    include: {
+      category: true,
     },
   });
 
   // Validazione esistenza prodotto
   if (!product) {
-    res.status(404).json({
-      error: "Product not found",
-    });
-    return;
+    return sendError(res, 404, "Product not found");
   }
 
   res.json(product);
 });
 
 // Store
-router.post("/", (req, res) => {
-  const body = req.body;
+router.post("/", async (req, res) => {
+  const { name, description, price, image, isActive } = req.body;
+
+  const newProduct = await prisma.product.create({
+    data: {
+      name,
+      description,
+      price,
+      image,
+      isActive,
+    },
+  });
   res.send("Creazione di un nuovo prodotto");
 });
 
