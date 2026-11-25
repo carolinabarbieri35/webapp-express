@@ -65,6 +65,17 @@ router.post("/", async (req, res) => {
     return sendError(res, 400, "Name and description data are required");
   }
 
+  // Validazione id categoria
+  // Select * from category where id = categoryId
+  const category = await prisma.category.findUnique({
+    where: {
+      id : categoryId,
+    }
+  })
+  if(!category) {
+    return sendError(res, 400, 'Category id not valid');
+  }
+
   const newProduct = await prisma.product.create({
     data: {
       name,
@@ -78,10 +89,34 @@ router.post("/", async (req, res) => {
   res.status(201).json(newProduct);
 });
 
-// Update
-router.patch("/:id", (req, res) => {
+// Update aggiornare una risorsa
+router.patch("/:id", async (req, res) => {
   const id = Number(req.params.id);
-  res.send(`Aggiornamento del prodotto con ${id}`);
+
+  // validazione id
+  if(!Number.isInteger(id)){
+    return res.sendStatus(400).json({
+      error: 'Invalid product id'
+    })
+  };
+
+  const {name, description, price, images, isActive, categoryId } = req.body;
+
+ const updatedProduct =  await prisma.product.update(){
+  where : {
+    id
+  },
+  data :{
+    name,
+    description,
+    price,
+    images,
+    isActive,
+    categoryId
+  }
+
+ }
+  res.json(updatedProduct);
 });
 
 // Destroy
